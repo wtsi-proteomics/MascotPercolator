@@ -1,0 +1,2 @@
+Documentation:
+http://www.sanger.ac.uk/resources/software/mascotpercolator.html
