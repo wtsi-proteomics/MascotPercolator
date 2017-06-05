@@ -1,0 +1,84 @@
+v1.00:
+    initial release.
+v1.01:
+    bufix:   Mascot Parser library apeared to calculat incorrect peptide fragmentation at times, resulting in biased results with Mascot Percolator under certain conditions.
+             Work-a-round implemented for Mascot Parser versions <=2.2.0.0
+             Bug was reported to Matrix Science and was fixed with Mascot Parser library version >= 2.2.05. The problem was SWIG, which caused premature garbage collection.
+    bugfix:  we found that Mascot (in cluster mode only) up to version 2.2.03 calculated the auto decoy search not correctly, resulting in biased Mascot Percolator results.
+             Fixed by Matrix Science in Mascot version 2.2.04. Bug #2584 under http://www.matrixscience.com/mascot_support.html#2.2
+    new:     simplified command line interface (now only one output file name required).
+v1.02:
+    feature refinement.
+v1.03:
+    bugfix: query column in results file were not reported correctly.
+v1.04:
+    release 1.04 requires Percolator version >= 1.09.
+    new:     write Mascot results dat file with -10log10(PosteriorErrorProbabilty) as a Mascot score replacement (-newDat parameter).
+    new:     retention time prediction is available as an option now (-rt flag), given the data mgf file contains 'RTINSECONDS' for each spectrum (see http://www.matrixscience.com/help/data_file_help.html)
+    new:     xml output instead of tab delimited output available (-xml parameter).
+    internal change: switched to new Percolator tab delimited input format.
+v1.05 (30/03/2009):
+    bugfix:  when a semicolon was used to separate protein identifiers of the same entry (e.g. Prot1;Prot1a), a parser error occurred.
+    new:     distributed computing package implemented
+    documentation available: http://www.sanger.ac.uk/Software/analysis/MascotPercolator/
+v1.06 (03/04/2009):
+    new:     new training feature 'varMods' defined; the number of variable mods divided by all possible variable mods for the peptide at hand
+    new:     the parameter 'ranks' is no longer supported and was replaced with 'rankdelta'.
+             rankdelta = maximum allowed Mascot score difference between best peptide match (rank 1) and peptide matches of rank 2..10.
+             Default = 1: all peptide hit ranks that have a delta Mascot score of < 1 to the top hit match are processed, ideal e.g. to report isobaric peptides etc.
+             A setting of -1 strictly reports only the top hit match. Hits of rank 2 and above are only considered if Mascot score > 13.
+    new:     the 'newDat' parameter flag now writes also the decoy part of the new dat file. However, this is only available for Mascot Percolator runs that are based on Mascot's Auto-Decoy feature.
+    new:     when new dat files are generated, a warning is written into the header: "Result file re-written by Mascot Percolator using scores derived from Percolator PEP values".
+    new:     new parameter flag '-features' to save the training data e.g. for debugging purposes.
+    bugfix: various users reported some Exceptions that are now handled.
+v1.07 (08/05/2009):
+    bugfix:  overwrite parameter has appended results to old results file. Fixed.
+    bugfix:  queue.Server threw an Exception if a Mascot search result was to be searched that was generated after the queue.Server was started.
+    bugfix:  protein feature is now disabled, since we have seen some artefacts on some datasets. This will be further investigated.
+    bugfix:  isotope corrected delta mass feature reported incorrect values when charge was 3+.
+    bugfix:  delta score now reported without log transformation; before it was always reported as log(deltaScore). Also no more upper maximum that was used as sanity check before.
+    new:     the static html page that the queue.Server writes now includes a auto-refresh tag, so the user always sees the latest status.
+    new:     if queue.Server scp' dat files to nodes, it sets the permissions of the temporary copy to be 666 (every UNIX user can read/write the file). Make sure you understand the implications.
+v1.08 (16/05/2009):
+    bugfix:  selection of sub-optimal ranks was biased towards target hits when rankdelta > 0. Now preserving balanced target/decoy set.
+    new:     complete re-implementation of queuing system; avoids bi-directional network communication for more stability and reliability.
+    new:     config.default.feature file is now part of the distribution. Do not change the file name or content. It presets the Mascot score to be used for the initial SVM training round.
+    new:     auto-refresh tag is removed from static html page upon request.
+    new:     updated config.properties file.
+    bugfix:  reduced memory footprint.
+v1.09 (24/06/2009): (basic features identical to 1.08; changes only affect extended feature set)
+    update:  refined spectrum processing (top 20 ions per 100mz mass window instead of global 0.1% ion intensity cut-off).
+    update:  relative intensities are now reported as % of total intensity.
+    update:  sequence coverage feature is removed since redundant with ion coverage when single series are used;
+    update:  peptide score feature removed due to strong correlation with Mascot score.
+    new:     MS2 mass accuracy is accounted for by median and IQR of MS2 ion mass errors.
+    new:     feature implemented longest consecutive series of B+/B++ and Y/Y++ ions.
+v1.10 (10/12/2009):
+    new:     percolated ion-series are not hardcoded anymore and depend on the Mascot search parameters (instrument). More flexible use.
+    bugfix:  if unimod information is not available in the dat files, check for mod_file and throw error if it cannot be found.
+V1.11 (30/04/2010):
+    note:   James Wright takes over Mascot Percolator Development
+    new:    Added charge filtering capability to the MascotROC utility
+V1.12 (16/10/2010):
+    new:    Added mascotList utility which will list all query top rank hits and their MHT and MIT FDR values
+    bugfix: Fix server version to read correctly from percolator v14 output
+V1.13
+    Minor Bug Fixes
+V1.14
+    Minor Bug Fixes
+V1.15 (05/01/11):
+    bugfix: Made new dat writer compatible with Mascot 2.3
+    bugfix: file scanner depth increased
+    bugfix: rankdelta default set to -1
+    new:    Multi database searches are now compatible
+V1.16 (01/02/11)
+    update: removed individual charge state features and replaced with single charge value
+    update: added proteins to MascotList tool
+V2.00 (28/02/11)
+    update: optional single charge value feature rather than individual features (consider increasing range of individual features?)
+    update: Added optional matching of high mass fragments, 3+ and 4+ fragments are calculated and used in fragment matching features
+    update: Added spectrum quality filter (option to disable) to remove spectra with low number of peaks
+    bugfix: Fix to solve totalMatchedIntensity (and hence relMatchedIntensity) being calculated incorrectly
+    bugfix: Fix to make sure each fragment intensity is only considered once in the total matched intensity (consider doing this for individual ion series as well?)
+V2.01 (2/11/11)
+    bugfix: made server/node compatible with new mascot cluster
